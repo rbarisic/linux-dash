@@ -454,10 +454,21 @@ linuxDash.directive('lineChartPlugin', ['$interval', '$compile', 'server', funct
       chart.addTimeSeries(series, { strokeStyle: 'rgba(' + scope.color + ', 1)', fillStyle: 'rgba(' + scope.color + ', 0.2)', lineWidth: 2 });
       chart.streamTo(canvas, 1000);
 
+      var dataCallInProgress = false;
+
       // update data on chart
       scope.getData = function () {
 
+        if (dataCallInProgress) {
+          console.log("skipping getData call for", scope.moduleName);
+          return;
+        }
+
+        dataCallInProgress = true;
+
         server.get(scope.moduleName, function (serverResponseData) {
+
+          dataCallInProgress = false;
 
           scope.lastGet = new Date().getTime();
 
@@ -574,15 +585,25 @@ linuxDash.directive('multiLineChartPlugin', ['$interval', '$compile', 'server', 
 
       chart.streamTo(canvas, delay);
 
+      var dataCallInProgress = false;
+
       // update data on chart
       scope.getData = function () {
 
+        if (dataCallInProgress) {
+          console.log("skipping getData call for", scope.moduleName);
+          return;
+        }
+
         if (!scope.seriesArray.length) return;
 
+        dataCallInProgress = true;
+
         server.get(scope.moduleName, function (serverResponseData) {
-          scope.lastGet = new Date().getTime();
-          var keyCount    = 0;
-          var maxAvg      = 100;
+          dataCallInProgress = false;
+          scope.lastGet      = new Date().getTime();
+          var keyCount       = 0;
+          var maxAvg         = 100;
 
           // update chart with current response
           for(var key in serverResponseData) {
