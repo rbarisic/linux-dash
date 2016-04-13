@@ -35,9 +35,6 @@
       when('/accounts', {
         templateUrl: 'templates/sections/accounts.html',
       }).
-      when('/apps', {
-        templateUrl: 'templates/sections/applications.html',
-      }).
       otherwise({
         redirectTo: '/loading'
       });
@@ -219,8 +216,7 @@
           'system-status',
           'basic-info',
           'network',
-          'accounts',
-          'apps'
+          'accounts'
         ];
 
         scope.getNavItemName = function(url) {
